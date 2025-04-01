@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>브레이크 마스터</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="game-info">
+        <div class="info-item">
+            <div class="info-label">점수</div>
+            <div id="score">0</div>
+        </div>
+        <div class="info-item">
+            <div class="info-label">거리</div>
+            <div id="distance">0.0</div>
+        </div>
+        <div class="info-item">
+            <div class="info-label">최고점수</div>
+            <div id="best-score">0</div>
+        </div>
+    </div>
+
+    <div id="game-container">
+        <div class="road">
+            <div class="lane"></div>
+            <div class="lane"></div>
+            <div class="lane"></div>
+        </div>
+        <div id="car"></div>
+        <div id="stop-line"></div>
+        <div id="score-effect"></div>
+    </div>
+
+    <button id="start-button">출발!</button>
+
+    <script src="game.js"></script>
+</body>
+</html>

@@ -1,0 +1,463 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100vh;
+    background-color: #1a1a1a;
+    font-family: Arial, sans-serif;
+    transition: background-color 0.5s;
+    overflow: hidden;
+    position: relative;
+    padding: 20px;
+}
+
+/* 날씨 효과 */
+body.weather-normal {
+    background: linear-gradient(to bottom, #87CEEB, #f0f0f0);
+}
+
+body.weather-normal::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: 50%;
+    width: 200px;
+    height: 200px;
+    background: #FFD700;
+    border-radius: 50%;
+    box-shadow: 0 0 50px #FFD700;
+    opacity: 0.5;
+    animation: sun-shine 3s ease-in-out infinite;
+}
+
+body.weather-rain {
+    background: linear-gradient(to bottom, #2c3e50, #3498db);
+}
+
+body.weather-rain::before {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle at center, #fff 1px, transparent 1px);
+    background-size: 30px 30px;
+    animation: rain-fall 1s linear infinite;
+    opacity: 0.3;
+}
+
+body.weather-snow {
+    background: linear-gradient(to bottom, #b8d9e8, #fff);
+}
+
+.snowflakes {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 1;
+}
+
+.snowflake {
+    position: absolute;
+    background: white;
+    border-radius: 50%;
+    opacity: 0.8;
+    animation: snowfall linear infinite;
+}
+
+/* 날씨 애니메이션 */
+@keyframes sun-shine {
+    0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 0.5; }
+    50% { transform: translate(-50%, -50%) scale(1.1); opacity: 0.7; }
+}
+
+@keyframes rain-fall {
+    0% {
+        transform: translateY(-100%) translateX(0);
+        opacity: 0;
+    }
+    10% {
+        opacity: 0.3;
+    }
+    90% {
+        opacity: 0.3;
+    }
+    100% {
+        transform: translateY(100%) translateX(0);
+        opacity: 0;
+    }
+}
+
+@keyframes snowfall {
+    0% {
+        transform: translateY(-100vh) translateX(0);
+        opacity: 0;
+    }
+    10% {
+        opacity: 1;
+    }
+    90% {
+        opacity: 1;
+    }
+    100% {
+        transform: translateY(100vh) translateX(20px);
+        opacity: 0;
+    }
+}
+
+.game-info {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 40px;
+    background: rgba(0, 0, 0, 0.7);
+    padding: 20px;
+    border-radius: 15px;
+    backdrop-filter: blur(10px);
+    z-index: 100;
+}
+
+.info-item {
+    text-align: center;
+}
+
+.info-label {
+    color: #888;
+    font-size: 1em;
+    margin-bottom: 5px;
+}
+
+#score, #distance, #best-score {
+    color: #fff;
+    font-size: 2.5em;
+    font-weight: bold;
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+    transition: transform 0.3s;
+}
+
+#score {
+    color: #4CAF50;
+    text-shadow: 0 0 10px rgba(76, 175, 80, 0.5);
+}
+
+#distance {
+    color: #2196F3;
+    text-shadow: 0 0 10px rgba(33, 150, 243, 0.5);
+}
+
+#best-score {
+    color: #FFC107;
+    text-shadow: 0 0 10px rgba(255, 193, 7, 0.5);
+}
+
+#game-container {
+    position: relative;
+    width: 800px;
+    height: 400px;
+    margin-top: 120px;
+    background-color: #333;
+    overflow: hidden;
+    border-radius: 10px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+    background-image: url('https://raw.githubusercontent.com/your-username/your-repo/main/road.png');
+    background-size: cover;
+    background-position: center;
+}
+
+.road {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.3);
+}
+
+.lane {
+    display: none;
+}
+
+@keyframes moveRoad {
+    from { transform: translateX(0); }
+    to { transform: translateX(0); }
+}
+
+#car {
+    position: absolute;
+    width: 60px;
+    height: 40px;
+    left: 50px;
+    top: 50%;
+    transform: translateY(-50%);
+    background-image: url('https://raw.githubusercontent.com/your-username/your-repo/main/car.png');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    z-index: 2;
+    transition: left 0.016s linear;
+}
+
+#stop-line {
+    position: absolute;
+    width: 10px;
+    height: 100%;
+    right: 100px;
+    background-color: #ff0000;
+    z-index: 1;
+}
+
+#score-effect {
+    position: absolute;
+    color: #fff;
+    font-size: 48px;
+    font-weight: bold;
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+    pointer-events: none;
+    z-index: 3;
+    transform-origin: center;
+    animation: scorePop 0.5s ease-out;
+}
+
+.score-perfect {
+    color: #FFD700;
+    text-shadow: 0 0 20px rgba(255, 215, 0, 0.8);
+    animation: perfectPop 0.5s ease-out;
+}
+
+.score-bonus {
+    color: #4CAF50;
+    text-shadow: 0 0 20px rgba(76, 175, 80, 0.8);
+    animation: bonusPop 0.5s ease-out;
+}
+
+@keyframes scorePop {
+    0% { transform: scale(0.5) rotate(-10deg); opacity: 0; }
+    50% { transform: scale(1.2) rotate(5deg); opacity: 1; }
+    100% { transform: scale(1) rotate(0); opacity: 1; }
+}
+
+@keyframes perfectPop {
+    0% { transform: scale(0.5) rotate(-15deg); opacity: 0; }
+    50% { transform: scale(1.3) rotate(8deg); opacity: 1; }
+    100% { transform: scale(1) rotate(0); opacity: 1; }
+}
+
+@keyframes bonusPop {
+    0% { transform: scale(0.5) rotate(-10deg); opacity: 0; }
+    50% { transform: scale(1.1) rotate(5deg); opacity: 1; }
+    100% { transform: scale(1) rotate(0); opacity: 1; }
+}
+
+#start-button {
+    margin-top: 20px;
+    padding: 15px 40px;
+    font-size: 1.5em;
+    color: #fff;
+    background: linear-gradient(45deg, #4CAF50, #45a049);
+    border: none;
+    border-radius: 25px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+#start-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+}
+
+#start-button:active {
+    transform: translateY(1px);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+}
+
+#start-button:disabled {
+    background: #ccc;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+.weather-rain .road {
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+.weather-snow .road {
+    background-color: rgba(0, 0, 0, 0.4);
+}
+
+.score-up {
+    animation: scoreUp 0.3s ease-out;
+}
+
+.distance-up {
+    animation: distanceUp 0.3s ease-out;
+}
+
+.distance-down {
+    animation: distanceDown 0.3s ease-out;
+}
+
+@keyframes scoreUp {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.2); }
+    100% { transform: scale(1); }
+}
+
+@keyframes distanceUp {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.2); }
+    100% { transform: scale(1); }
+}
+
+@keyframes distanceDown {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.2); }
+    100% { transform: scale(1); }
+}
+
+.controls {
+    margin-top: 30px;
+    text-align: center;
+    font-size: 1.1em;
+    color: #666;
+    z-index: 2;
+    position: relative;
+}
+
+.instruction {
+    padding: 15px 30px;
+    background-color: rgba(248, 248, 248, 0.9);
+    border-radius: 10px;
+    margin-top: 15px;
+    font-size: 1.2em;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    display: inline-block;
+}
+
+.upgrade-menu, .achievement-menu {
+    position: fixed;
+    right: 20px;
+    background: rgba(0, 0, 0, 0.8);
+    padding: 20px;
+    border-radius: 15px;
+    color: white;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+}
+
+.upgrade-menu {
+    top: 20px;
+}
+
+.achievement-menu {
+    bottom: 20px;
+}
+
+.upgrade-menu h2, .achievement-menu h2 {
+    margin-bottom: 15px;
+    color: #FFC107;
+    text-align: center;
+}
+
+.upgrade-item, .achievement-item {
+    margin-bottom: 15px;
+    padding: 10px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.upgrade-item button {
+    background: linear-gradient(45deg, #4CAF50, #45a049);
+    border: none;
+    padding: 8px 15px;
+    border-radius: 20px;
+    color: white;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.upgrade-item button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
+}
+
+.progress {
+    background: rgba(255, 255, 255, 0.2);
+    padding: 5px 10px;
+    border-radius: 15px;
+    font-size: 0.9em;
+}
+
+#level, #coins {
+    color: #fff;
+    font-size: 1.5em;
+    font-weight: bold;
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+}
+
+#level {
+    color: #FFC107;
+    text-shadow: 0 0 10px rgba(255, 193, 7, 0.5);
+}
+
+#coins {
+    color: #FFD700;
+    text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+}
+
+.level-up-effect {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: linear-gradient(45deg, #FFD700, #FFA500);
+    color: white;
+    padding: 20px 40px;
+    border-radius: 30px;
+    font-size: 2em;
+    font-weight: bold;
+    text-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    animation: levelUpPop 0.5s ease-out;
+    z-index: 1000;
+}
+
+@keyframes levelUpPop {
+    0% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; }
+    50% { transform: translate(-50%, -50%) scale(1.2); opacity: 1; }
+    100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+}
+
+.upgrade-effect {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: linear-gradient(45deg, #4CAF50, #45a049);
+    color: white;
+    padding: 20px 40px;
+    border-radius: 30px;
+    font-size: 1.5em;
+    font-weight: bold;
+    text-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    animation: upgradePop 0.5s ease-out;
+    z-index: 1000;
+}
+
+@keyframes upgradePop {
+    0% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; }
+    50% { transform: translate(-50%, -50%) scale(1.2); opacity: 1; }
+    100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+} 

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="800" height="400" viewBox="0 0 800 400" xmlns="http://www.w3.org/2000/svg">
+    <!-- 도로 배경 -->
+    <rect width="800" height="400" fill="#333333"/>
+    
+    <!-- 차선 -->
+    <g stroke="#ffffff" stroke-width="20" stroke-dasharray="40,40">
+        <line x1="0" y1="200" x2="800" y2="200"/>
+        <line x1="0" y1="100" x2="800" y2="100"/>
+        <line x1="0" y1="300" x2="800" y2="300"/>
+    </g>
+    
+    <!-- 도로 텍스처 -->
+    <g fill="#444444">
+        <rect x="0" y="0" width="800" height="400" fill="url(#noise)"/>
+    </g>
+    
+    <!-- 노이즈 효과 -->
+    <defs>
+        <filter id="noise">
+            <feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="3" stitchTiles="stitch"/>
+        </filter>
+    </defs>
+</svg> 
